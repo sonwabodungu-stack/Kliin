@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Kliin – Semi-Functional Marketplace Demo</title>
+
+<style>
+body { font-family: Arial, sans-serif; background:#f4f4f4; margin:0; color:#111; }
+.container { max-width:430px; margin:24px auto; background:#fff; padding:20px; border-radius:12px; }
+h1,h2 { font-size:20px; margin-bottom:8px; }
+p { font-size:14px; }
+input, select, textarea {
+  width:100%; padding:10px; margin:6px 0;
+  border-radius:6px; border:1px solid #ccc;
+}
+button {
+  width:100%; padding:12px; margin:8px 0;
+  border:none; border-radius:8px; font-size:15px;
+}
+.primary { background:#111; color:#fff; }
+.secondary { background:#eaeaea; }
+.card { border:1px solid #ddd; border-radius:8px; padding:10px; margin:8px 0; }
+.screen { display:none; }
+.screen.active { display:block; }
+.stat { font-size:13px; margin:4px 0; }
+.small { font-size:12px; color:#666; text-align:center; margin-top:14px; }
+</style>
+</head>
+
+<body>
+<div class="container">
+
+<!-- HOME -->
+<div class="screen active" id="home">
+<h1>Kliin</h1>
+<p>Book trusted cleaning & hygiene services across South Africa.</p>
+<button class="primary" onclick="go('clientSignup')">I need a service</button>
+<button class="secondary" onclick="go('cleanerSignup')">I am a cleaner</button>
+</div>
+
+<!-- CLIENT SIGNUP -->
+<div class="screen" id="clientSignup">
+<h2>Client signup</h2>
+<input id="clientName" placeholder="Your name">
+<button class="primary" onclick="saveClient()">Continue</button>
+</div>
+
+<!-- SERVICES -->
+<div class="screen" id="services">
+<h2>Browse services</h2>
+<select onchange="selectService(this.value)">
+<option value="">Select a category</option>
+<option>Home Cleaning</option>
+<option>Laundry</option>
+<option>Car Wash</option>
+<option>Sneaker Wash</option>
+<option>Landscaping</option>
+<option>Pest Control</option>
+</select>
+<button class="secondary" onclick="go('home')">Back</button>
+</div>
+
+<!-- PACKAGES -->
+<div class="screen" id="packages">
+<h2>Choose a package</h2>
+
+<div class="card">
+<b>Basic – R250</b>
+<p>Small job · Same day</p>
+<button class="primary" onclick="placeOrder(250)">Select</button>
+</div>
+
+<div class="card">
+<b>Standard – R450</b>
+<p>Medium job · 1 day</p>
+<button class="primary" onclick="placeOrder(450)">Select</button>
+</div>
+
+<div class="card">
+<b>Premium – R750</b>
+<p>Large job · Priority</p>
+<button class="primary" onclick="placeOrder(750)">Select</button>
+</div>
+</div>
+
+<!-- CHECKOUT -->
+<div class="screen" id="checkout">
+<h2>Checkout</h2>
+<p id="priceInfo"></p>
+<p>Service fee (5.5%) included</p>
+<button class="primary" onclick="pay()">Pay & Place Order</button>
+</div>
+
+<!-- CLIENT DASH -->
+<div class="screen" id="clientDashboard">
+<h2>Client dashboard</h2>
+<button class="primary" onclick="go('messages')">Message cleaner</button>
+<button class="secondary" onclick="acceptWork()">Accept delivery</button>
+</div>
+
+<!-- CLEANER SIGNUP -->
+<div class="screen" id="cleanerSignup">
+<h2>Cleaner signup</h2>
+<input id="cleanerName" placeholder="Business name">
+<textarea placeholder="Portfolio description"></textarea>
+<button class="primary" onclick="saveCleaner()">Continue</button>
+</div>
+
+<!-- CLEANER DASH -->
+<div class="screen" id="cleanerDash">
+<h2>Cleaner dashboard</h2>
+<p id="jobAlert"></p>
+<div class="stat">Views: 124</div>
+<div class="stat">Likes: 32</div>
+<div class="stat">Profile visits: 18</div>
+<button class="primary" onclick="deliver()">Submit delivery</button>
+</div>
+
+<!-- MESSAGES -->
+<div class="screen" id="messages">
+<h2>Messages</h2>
+<textarea placeholder="Send a message…"></textarea>
+<button class="primary" onclick="alert('Message sent')">Send</button>
+<button class="secondary" onclick="go('clientDashboard')">Back</button>
+</div>
+
+<!-- PAYOUT -->
+<div class="screen" id="payout">
+<h2>Payment released</h2>
+<p>Cleaner earnings available in 14 days.</p>
+<button class="primary" onclick="go('home')">Finish</button>
+</div>
+
+<p class="small">Semi-functional demo · No real payments · Investor & pilot use</p>
+</div>
+
+<script>
+function go(id){
+ document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
+ document.getElementById(id).classList.add('active');
+}
+
+function saveClient(){
+ localStorage.setItem('client', document.getElementById('clientName').value);
+ go('services');
+}
+
+function selectService(s){
+ localStorage.setItem('service', s);
+ go('packages');
+}
+
+function placeOrder(price){
+ let fee = price * 0.055;
+ document.getElementById('priceInfo').innerText =
+  'Total payable: R' + Math.round(price + fee);
+ go('checkout');
+}
+
+function pay(){
+ localStorage.setItem('orderStatus', 'escrow');
+ go('clientDashboard');
+}
+
+function saveCleaner(){
+ document.getElementById('jobAlert').innerText =
+  'New job request: ' + localStorage.getItem('service');
+ go('cleanerDash');
+}
+
+function deliver(){
+ alert('Work delivered to client');
+ go('clientDashboard');
+}
+
+function acceptWork(){
+ alert('Delivery accepted. Funds released.');
+ go('payout');
+}
+</script>
+</body>
+</html>
