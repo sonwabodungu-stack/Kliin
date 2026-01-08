@@ -1,0 +1,100 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Kliin – Semi‑Functional Demo</title>
+<style>
+body { font-family: Arial, sans-serif; margin: 0; background: #f6f6f6; color: #111; }
+.container { max-width: 420px; margin: 30px auto; background: #fff; padding: 24px; border-radius: 12px; }
+h1 { font-size: 22px; }
+input { width: 100%; padding: 12px; margin: 8px 0; border-radius: 6px; border: 1px solid #ccc; }
+button { width: 100%; padding: 14px; margin: 10px 0; border: none; border-radius: 8px; font-size: 15px; cursor: pointer; }
+.primary { background: #111; color: #fff; }
+.secondary { background: #eaeaea; }
+.screen { display: none; }
+.screen.active { display: block; }
+.small { font-size: 12px; color: #666; text-align: center; margin-top: 16px; }
+</style>
+</head>
+<body>
+
+<div class="container">
+
+<div class="screen active" id="home">
+<h1>Kliin</h1>
+<p>Book trusted home services.</p>
+<button class="primary" onclick="goTo('signup')">Client sign up</button>
+<button class="secondary" onclick="goTo('cleanerSignup')">Cleaner sign up</button>
+</div>
+
+<div class="screen" id="signup">
+<h1>Client sign up</h1>
+<input id="clientName" placeholder="Your name">
+<button class="primary" onclick="saveClient()">Continue</button>
+</div>
+
+<div class="screen" id="services">
+<h1>Select service</h1>
+<button class="primary" onclick="bookService('Home Cleaning')">Home Cleaning</button>
+<button class="secondary" onclick="bookService('Laundry')">Laundry</button>
+</div>
+
+<div class="screen" id="confirm">
+<h1>Booking placed</h1>
+<p>Your booking has been saved.</p>
+<button class="primary" onclick="goTo('home')">Done</button>
+</div>
+
+<div class="screen" id="cleanerSignup">
+<h1>Cleaner sign up</h1>
+<input id="cleanerName" placeholder="Cleaner name">
+<button class="primary" onclick="saveCleaner()">Continue</button>
+</div>
+
+<div class="screen" id="cleanerDash">
+<h1>Cleaner dashboard</h1>
+<p id="jobInfo"></p>
+<button class="primary" onclick="acceptJob()">Accept job</button>
+<button class="secondary" onclick="goTo('home')">Logout</button>
+</div>
+
+<p class="small">Semi‑functional demo using local storage (no real payments)</p>
+
+</div>
+
+<script>
+function goTo(id){
+ document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
+ document.getElementById(id).classList.add('active');
+}
+
+function saveClient(){
+ const name = document.getElementById('clientName').value;
+ localStorage.setItem('client', name);
+ goTo('services');
+}
+
+function bookService(service){
+ localStorage.setItem('job', service);
+ goTo('confirm');
+}
+
+function saveCleaner(){
+ const name = document.getElementById('cleanerName').value;
+ localStorage.setItem('cleaner', name);
+ document.getElementById('jobInfo').innerText =
+   'New job available: ' + localStorage.getItem('job');
+ goTo('cleanerDash');
+}
+
+function acceptJob(){
+ alert('Job accepted!');
+ localStorage.removeItem('job');
+ goTo('home');
+}
+</script>
+
+</body>
+</html>
